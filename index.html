@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novamart | Point of Sale</title>
+<style>
+:root {
+  --navy:#17385f;
+  --blue:#2f6eae;
+  --light:#eaf4ff;
+  --bg:#f3f7fc;
+  --text:#293b50;
+  --muted:#8190a3;
+  --border:#e1eaf4;
+  --green:#18865b;
+  --red:#c34d55;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.topbar{height:76px;padding:0 28px;background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{background:linear-gradient(145deg,#6ca9e8,#24568c);color:white;font-size:25px;font-weight:800;width:44px;height:44px;border-radius:13px;display:grid;place-items:center}
+.brand h1{margin:0;color:var(--navy);font-size:21px;letter-spacing:1px}
+.brand p{margin:4px 0 0;font-size:11px;color:var(--muted);letter-spacing:1.2px}
+.header-right{display:flex;align-items:center;gap:12px}
+.status{background:#e7f8ef;color:var(--green);border-radius:30px;padding:9px 13px;font-size:12px;font-weight:700}
+.avatar{background:var(--light);color:var(--blue);border-radius:50%;width:39px;height:39px;display:grid;place-items:center;font-weight:800}
+main{max-width:1600px;margin:auto;padding:28px}
+.page-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}
+.eyebrow{color:var(--blue);font-size:10px;font-weight:800;letter-spacing:2px;margin-bottom:8px}
+.page-heading h2{margin:0;font-size:27px;color:var(--navy)}
+.page-heading p{margin:8px 0 0;color:var(--muted);font-size:13px}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,.85fr);gap:22px;align-items:start}
+.panel{background:white;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 8px 25px #244b7210;min-width:0}
+.panel-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.panel-heading h3{margin:0;font-size:16px;color:var(--navy)}
+.panel-heading p{margin:5px 0 0;color:var(--muted);font-size:11px}
+.search{position:relative;margin-bottom:16px}
+.search input{width:100%;padding:13px 14px 13px 42px;border:1px solid var(--border);border-radius:11px;background:#f9fbfe;outline:none}
+.search span{position:absolute;left:14px;top:11px;color:var(--muted);font-size:18px}
+input:focus,select:focus{border-color:#79afe6;outline:2px solid #dceeff}
+.categories{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:19px}
+.category-btn{border:1px solid var(--border);background:white;color:#687b91;padding:9px 13px;border-radius:9px;font-size:12px;font-weight:650}
+.category-btn.active,.category-btn:hover{background:var(--light);border-color:#c4def8;color:var(--blue)}
+.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.product{border:1px solid var(--border);border-radius:14px;background:white;padding:14px;min-width:0}
+.product:hover{border-color:#8bbce9;background:#f9fcff}
+.product-icon{width:43px;height:43px;border-radius:12px;background:var(--light);display:grid;place-items:center;font-size:22px;margin-bottom:13px}
+.product-name{color:var(--navy);font-size:12px;font-weight:750;line-height:1.5;min-height:36px}
+.product-code{font-size:10px;color:var(--muted);margin-top:5px}
+.product-price{color:var(--blue);font-size:14px;font-weight:800;margin-top:12px}
+.product-stock{font-size:10px;color:var(--muted);margin-top:7px}
+.product-actions{display:flex;gap:6px;margin-top:10px}
+.product-actions button{flex:1}
+.cart-panel{position:sticky;top:96px}
+.cart-count{background:var(--light);color:var(--blue);border-radius:8px;padding:6px 9px;font-size:11px;font-weight:750}
+.btn{border:0;border-radius:10px;padding:11px 14px;font-size:12px;font-weight:750}
+.btn-primary{color:white;background:var(--blue)}
+.btn-primary:hover{background:var(--navy)}
+.btn-light{color:var(--blue);background:var(--light)}
+.btn-danger{color:var(--red);background:#fff0f0}
+.btn-small{padding:6px 9px;border-radius:7px}
+.cart-list{max-height:340px;overflow-y:auto}
+.cart-item{display:flex;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid #edf2f8}
+.cart-item strong{display:block;color:var(--navy);font-size:12px}
+.cart-item small{display:block;color:var(--muted);font-size:10px;margin-top:5px}
+.cart-item-right{text-align:right;flex-shrink:0}
+.cart-subtotal{font-weight:800;font-size:12px;color:var(--blue)}
+.quantity{display:flex;align-items:center;gap:9px;margin-top:9px}
+.quantity button{border:1px solid var(--border);background:#f7faff;color:var(--blue);border-radius:7px;width:25px;height:25px}
+.quantity span{font-size:12px;font-weight:750}
+.empty{text-align:center;padding:25px 10px;color:var(--muted);font-size:12px;line-height:1.8}
+.summary{margin-top:17px;border-top:1px dashed #d8e4f1;padding-top:15px}
+.summary-row{display:flex;justify-content:space-between;gap:12px;margin:11px 0;font-size:12px;color:var(--muted)}
+.summary-row strong{color:var(--text)}
+.summary-row.total{border-top:1px solid var(--border);padding-top:16px;margin-top:17px;align-items:center;color:var(--navy);font-size:14px;font-weight:750}
+.summary-row.total strong{color:var(--navy);font-size:23px}
+.field{margin-top:14px}
+.field label{display:block;margin-bottom:8px;color:#657991;font-size:11px;font-weight:750}
+.field input,.field select{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:white;font-size:13px}
+.change-box{background:#f0f8ff;border:1px solid #dcecff;border-radius:12px;padding:13px;margin-top:13px}
+.change-box span{color:var(--muted);font-size:11px}
+.change-box strong{display:block;color:var(--green);font-size:20px;margin-top:6px}
+.checkout{width:100%;margin-top:15px;padding:14px;font-size:13px}
+.history-panel{margin-top:22px}
+.sales-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.sales-card{background:white;border:1px solid var(--border);border-radius:15px;padding:18px}
+.sales-card span{color:var(--muted);font-size:12px}
+.sales-card strong{display:block;color:var(--navy);font-size:22px;margin-top:9px;overflow-wrap:anywhere}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;white-space:nowrap;text-align:left}
+th,td{padding:13px 12px;border-bottom:1px solid #edf2f8;font-size:11px}
+th{background:#f7faff;color:#8393a7;font-size:10px;text-transform:uppercase;letter-spacing:.6px}
+td{color:#50647b}
+.footer{text-align:center;color:#94a2b2;font-size:10px;padding:25px 0 5px}
+.modal{display:none;position:fixed;inset:0;background:#102c4b80;z-index:20;align-items:center;justify-content:center;padding:18px}
+.modal.open{display:flex}
+.modal-content{background:white;border-radius:18px;padding:25px;width:min(430px,100%);max-height:90vh;overflow-y:auto}
+.modal-content h3{color:var(--navy);margin-top:0}
+.receipt{font-family:monospace;color:#26364b;font-size:12px;line-height:1.7}
+.receipt h2{text-align:center;color:var(--navy)}
+.receipt-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed #ddd;padding:7px 0}
+.modal-actions{display:flex;gap:9px;margin-top:20px}
+.modal-actions button{flex:1}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:white;border-radius:11px;padding:12px 17px;font-size:12px;box-shadow:0 8px 25px #17385f30;display:none;z-index:50;max-width:calc(100% - 30px)}
+#toast.show{display:block}
+@media(max-width:1050px){main{padding:20px}.layout{grid-template-columns:1fr}.cart-panel{position:static}}
+@media(max-width:650px){.topbar{padding:0 14px;height:68px}.brand h1{font-size:17px}.brand p{font-size:9px}.logo{width:38px;height:38px}.status{display:none}main{padding:16px 12px}.page-heading h2{font-size:23px}.panel{padding:15px;border-radius:15px}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.product{padding:11px}.product-name{min-height:auto}.sales-summary{grid-template-columns:1fr}.panel-heading{align-items:flex-start}}
+@media print{body *{visibility:hidden}#receipt,#receipt *{visibility:visible}#receipt{display:block!important;position:absolute;left:0;top:0;width:100%;background:white;padding:15px}#receipt .modal-actions{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">N</div>
+    <div><h1>NOVAMART</h1><p>POINT OF SALE SYSTEM</p></div>
+  </div>
+  <div class="header-right">
+    <div class="status">● Kasir Aktif</div>
+    <div class="avatar">N</div>
+  </div>
+</header>
+
+<main>
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">POINT OF SALE</div>
+      <h2>Transaksi Penjualan</h2>
+      <p>Kelola belanja pelanggan dengan cepat dan mudah.</p>
+    </div>
+    <button class="btn btn-light" onclick="resetCart()">↻ Transaksi Baru</button>
+  </div>
+
+  <section class="sales-summary">
+    <div class="sales-card"><span>Total Produk</span><strong id="summaryProducts">0</strong></div>
+    <div class="sales-card"><span>Total Transaksi</span><strong id="summaryTransactions">0</strong></div>
+    <div class="sales-card"><span>Total Penjualan</span><strong id="summarySales">Rp0</strong></div>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-heading">
+        <div><h3>Pilih Produk</h3><p>Cari produk lalu klik untuk memasukkannya ke keranjang.</p></div>
+        <button class="btn btn-primary" onclick="openProductForm()">+ Tambah</button>
+      </div>
+      <div class="search"><span>⌕</span><input id="search" type="search" placeholder="Cari nama atau kode produk..." autocomplete="off"></div>
+      <div class="categories" id="categories"></div>
+      <div class="products" id="products"></div>
+    </section>
+
+    <section class="panel cart-panel">
+      <div class="panel-heading">
+        <div><h3>Keranjang Belanja</h3><p>Periksa pesanan sebelum pembayaran.</p></div>
+        <span class="cart-count" id="itemCount">0 item</span>
+      </div>
+      <div class="cart-list" id="cart"></div>
+      <div class="summary">
+        <div class="summary-row"><span>Total jumlah barang</span><strong id="totalQty">0</strong></div>
+        <div class="summary-row total"><span>Total Belanja</span><strong id="total">Rp0</strong></div>
+        <div class="field">
+          <label for="payment">UANG PEMBAYARAN (RUPIAH)</label>
+          <input id="payment" type="number" min="0" step="1" placeholder="Masukkan uang dari pelanggan">
+        </div>
+        <div class="change-box"><span>Kembalian pelanggan</span><strong id="change">Rp0</strong></div>
+        <button class="btn btn-primary checkout" onclick="checkout()">✓ Proses Pembayaran</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel history-panel">
+    <div class="panel-heading">
+      <div><h3>Transaksi Terakhir</h3><p>Riwayat transaksi yang tersimpan di browser ini.</p></div>
+      <button class="btn btn-light" onclick="exportHistory()">↓ Ekspor CSV</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>No. Transaksi</th><th>Tanggal</th><th>Jumlah Item</th><th>Total</th><th>Dibayar</th><th>Kembalian</th><th>Struk</th></tr></thead>
+        <tbody id="history"></tbody>
+      </table>
+    </div>
+  </section>
+  <div class="footer">Novamart © <span id="year"></span> · Smart Shopping, Simple Living</div>
+</main>
+
+<div class="modal" id="productModal">
+  <div class="modal-content">
+    <h3 id="productFormTitle">Tambah Produk</h3>
+    <form id="productForm">
+      <div class="field"><label for="productId">Kode Produk</label><input id="productId" required placeholder="Contoh: P010"></div>
+      <div class="field"><label for="productName">Nama Produk</label><input id="productName" required placeholder="Nama produk"></div>
+      <div class="field"><label for="productCategory">Kategori</label><input id="productCategory" required placeholder="Contoh: Makanan"></div>
+      <div class="field"><label for="productPrice">Harga (Rp)</label><input id="productPrice" type="number" min="0" step="1" required></div>
+      <div class="field"><label for="productStock">Stok</label><input id="productStock" type="number" min="0" step="1" required></div>
+      <div class="field"><label for="productIcon">Ikon / Emoji</label><input id="productIcon" maxlength="8" placeholder="🛍️"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-light" onclick="closeProductForm()">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Produk</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="receipt">
+  <div class="modal-content">
+    <div class="receipt" id="receiptContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-light" onclick="closeReceipt()">Tutup</button>
+      <button class="btn btn-primary" onclick="window.print()">Cetak Struk</button>
+    </div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const sampleProducts = [
+  {id:"P001",name:"Beras Premium 5 Kg",category:"Sembako",price:75000,stock:12,icon:"🌾"},
+  {id:"P002",name:"Minyak Goreng 1 L",category:"Sembako",price:18000,stock:4,icon:"🫗"},
+  {id:"P003",name:"Gula Pasir 1 Kg",category:"Sembako",price:17000,stock:18,icon:"🍚"},
+  {id:"P004",name:"Susu UHT 1 L",category:"Minuman",price:21000,stock:9,icon:"🥛"},
+  {id:"P005",name:"Air Mineral 600 ml",category:"Minuman",price:4000,stock:24,icon:"💧"},
+  {id:"P006",name:"Roti Tawar",category:"Makanan",price:16000,stock:6,icon:"🍞"},
+  {id:"P007",name:"Mi Instan",category:"Makanan",price:3500,stock:30,icon:"🍜"},
+  {id:"P008",name:"Sabun Mandi",category:"Perawatan",price:5000,stock:15,icon:"🧼"},
+  {id:"P009",name:"Tisu Wajah",category:"Perawatan",price:12000,stock:8,icon:"🧻"}
+];
+
+function loadData(key,fallback){
+  try{
+    const value=localStorage.getItem(key);
+    return value?JSON.parse(value):fallback;
+  }catch{return fallback;}
+}
+
+let products=loadData("novamart_pos_products",sampleProducts);
+let history=loadData("novamart_pos_history",[]);
+let cart=[];
+let activeCategory="Semua";
+let editingProductId=null;
+let toastTimer;
+const $=id=>document.getElementById(id);
+
+function money(value){
+  return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(value||0);
+}
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+}
+function saveData(){
+  try{
+    localStorage.setItem("novamart_pos_products",JSON.stringify(products));
+    localStorage.setItem("novamart_pos_history",JSON.stringify(history));
+    return true;
+  }catch{
+    notify("Penyimpanan browser gagal. Periksa ruang penyimpanan.");
+    return false;
+  }
+}
+function notify(message){
+  $("toast").textContent=message;
+  $("toast").classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>$("toast").classList.remove("show"),2600);
+}
+function getTotal(){return cart.reduce((sum,item)=>sum+item.price*item.qty,0);}
+
+function renderCategories(){
+  const categories=["Semua",...new Set(products.map(p=>p.category))];
+  if(!categories.includes(activeCategory))activeCategory="Semua";
+  $("categories").innerHTML=categories.map(category=>`
+    <button class="category-btn ${category===activeCategory?"active":""}" onclick="setCategory('${escapeHTML(category)}')">${escapeHTML(category)}</button>
+  `).join("");
+}
+function setCategory(category){
+  activeCategory=category;
+  renderCategories();
+  renderProducts();
+}
+function renderProducts(){
+  const query=$("search").value.trim().toLowerCase();
+  const filtered=products.filter(p=>
+    (p.name.toLowerCase().includes(query)||p.id.toLowerCase().includes(query))&&
+    (activeCategory==="Semua"||p.category===activeCategory)
+  );
+  $("products").innerHTML=filtered.length?filtered.map(p=>`
+    <div class="product">
+      <button style="border:0;background:transparent;padding:0;width:100%;text-align:left" onclick="addToCart('${escapeHTML(p.id)}')" ${p.stock<=0?"disabled":""}>
+        <div class="product-icon">${escapeHTML(p.icon||"🛍️")}</div>
+        <div class="product-name">${escapeHTML(p.name)}</div>
+        <div class="product-code">${escapeHTML(p.id)}</div>
+        <div class="product-price">${money(p.price)}</div>
+        <div class="product-stock">${p.stock>0?"Stok: "+p.stock:"Stok habis"}</div>
+      </button>
+      <div class="product-actions">
+        <button class="btn btn-light btn-small" onclick="openProductForm('${escapeHTML(p.id)}')">Edit</button>
+        <button class="btn btn-danger btn-small" onclick="deleteProduct('${escapeHTML(p.id)}')">Hapus</button>
+      </div>
+    </div>
+  `).join(""):'<div class="empty">Produk tidak ditemukan.</div>';
+}
+function openProductForm(id=null){
+  editingProductId=id;
+  $("productForm").reset();
+  $("productFormTitle").textContent=id?"Edit Produk":"Tambah Produk";
+  const p=products.find(item=>item.id===id);
+  if(p){
+    $("productId").value=p.id;
+    $("productId").disabled=true;
+    $("productName").value=p.name;
+    $("productCategory").value=p.category;
+    $("productPrice").value=p.price;
+    $("productStock").value=p.stock;
+    $("productIcon").value=p.icon||"";
+  }else{
+    $("productId").disabled=false;
+  }
+  $("productModal").classList.add("open");
+}
+function closeProductForm(){
+  $("productModal").classList.remove("open");
+  $("productId").disabled=false;
+}
+$("productForm").addEventListener("submit",event=>{
+  event.preventDefault();
+  const id=$("productId").value.trim().toUpperCase();
+  const name=$("productName").value.trim();
+  const category=$("productCategory").value.trim();
+  const price=Number($("productPrice").value);
+  const stock=Number($("productStock").value);
+  const icon=$("productIcon").value.trim()||"🛍️";
+
+  if(!id||!name||!category||!Number.isFinite(price)||price<0||!Number.isInteger(price)||!Number.isInteger(stock)||stock<0){
+    return notify("Periksa kembali data produk.");
+  }
+  if(!editingProductId&&products.some(p=>p.id.toLowerCase()===id.toLowerCase())){
+    return notify("Kode produk sudah digunakan.");
+  }
+
+  const oldProducts=products.map(p=>({...p}));
+  const oldCart=cart.map(item=>({...item}));
+  if(editingProductId){
+    products=products.map(p=>p.id===editingProductId?{...p,name,category,price,stock,icon}:p);
+    cart=cart.map(item=>item.id===editingProductId?{...item,name,price}:item);
+  }else{
+    products.push({id,name,category,price,stock,icon});
+  }
+  if(!saveData()){
+    products=oldProducts;
+    cart=oldCart;
+    return;
+  }
+  activeCategory="Semua";
+  closeProductForm();
+  renderAll();
+  notify(editingProductId?"Produk berhasil diperbarui.":"Produk berhasil ditambahkan.");
+});
+function deleteProduct(id){
+  const p=products.find(item=>item.id===id);
+  if(!p)return;
+  if(cart.some(item=>item.id===id))return notify("Keluarkan produk dari keranjang sebelum menghapusnya.");
+  if(!confirm("Hapus produk "+p.name+"?"))return;
+  const old=products;
+  products=products.filter(item=>item.id!==id);
+  if(!saveData()){products=old;return;}
+  renderAll();
+  notify("Produk berhasil dihapus.");
+}
+
+function addToCart(id){
+  const p=products.find(item=>item.id===id);
+  if(!p||p.stock<=0)return notify("Stok produk habis.");
+  const item=cart.find(i=>i.id===id);
+  if(item){
+    if(item.qty>=p.stock)return notify("Jumlah melebihi stok.");
+    item.qty++;
+  }else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+  renderCart();
+}
+function changeQty(id,change){
+  const item=cart.find(i=>i.id===id);
+  const p=products.find(i=>i.id===id);
+  if(!item||!p)return;
+  const next=item.qty+change;
+  if(next<=0)cart=cart.filter(i=>i.id!==id);
+  else if(next>p.stock)return notify("Jumlah melebihi stok yang tersedia.");
+  else item.qty=next;
+  renderCart();
+}
+function removeFromCart(id){
+  cart=cart.filter(i=>i.id!==id);
+  renderCart();
+}
+function renderCart(){
+  $("cart").innerHTML=cart.length?cart.map(item=>`
+    <div class="cart-item">
+      <div><strong>${escapeHTML(item.name)}</strong><small>${money(item.price)} / item</small>
+        <div class="quantity">
+          <button onclick="changeQty('${escapeHTML(item.id)}',-1)">−</button>
+          <span>${item.qty}</span>
+          <button onclick="changeQty('${escapeHTML(item.id)}',1)">+</button>
+        </div>
+      </div>
+      <div class="cart-item-right"><div class="cart-subtotal">${money(item.price*item.qty)}</div>
+        <button class="btn btn-danger btn-small" style="margin-top:8px" onclick="removeFromCart('${escapeHTML(item.id)}')">Hapus</button>
+      </div>
+    </div>
+  `).join(""):'<div class="empty">Keranjang masih kosong.<br>Pilih produk untuk memulai transaksi.</div>';
+  const qty=cart.reduce((sum,item)=>sum+item.qty,0);
+  const total=getTotal(),paid=Number($("payment").value);
+  $("itemCount").textContent=qty+" item";
+  $("totalQty").textContent=qty;
+  $("total").textContent=money(total);
+  $("change").textContent=money(paid>=total&&total>0?paid-total:0);
+}
+function resetCart(){
+  if(cart.length&&!confirm("Mulai transaksi baru dan kosongkan keranjang?"))return;
+  cart=[];
+  $("payment").value="";
+  $("search").value="";
+  activeCategory="Semua";
+  renderCategories();renderProducts();renderCart();
+  notify("Keranjang siap untuk transaksi baru.");
+}
+function checkout(){
+  if(!cart.length)return notify("Keranjang masih kosong.");
+  for(const item of cart){
+    const p=products.find(p=>p.id===item.id);
+    if(!p||p.stock<item.qty){
+      renderProducts();
+      return notify("Stok berubah. Periksa kembali keranjang.");
+    }
+  }
+  const total=getTotal(),paid=Number($("payment").value);
+  if(!Number.isFinite(paid)||paid<total)return notify("Uang pembayaran belum mencukupi.");
+  if(!Number.isInteger(paid)||paid<0)return notify("Masukkan nominal pembayaran dalam rupiah bulat.");
+
+  const now=new Date();
+  const tx={
+    id:"NM-"+now.getTime(),
+    date:now.toISOString(),
+    items:cart.map(item=>({...item})),
+    total,paid,change:paid-total
+  };
+  const oldProducts=products.map(p=>({...p}));
+  const oldHistory=[...history];
+  cart.forEach(item=>{
+    const p=products.find(p=>p.id===item.id);
+    p.stock-=item.qty;
+  });
+  history.unshift(tx);
+  if(!saveData()){
+    products=oldProducts;
+    history=oldHistory;
+    return;
+  }
+  cart=[];
+  $("payment").value="";
+  renderAll();
+  showReceipt(tx);
+  notify("Transaksi berhasil disimpan.");
+}
+function showReceipt(tx){
+  $("receiptContent").innerHTML=`
+    <h2>NOVAMART</h2>
+    <div style="text-align:center">Bukti Pembayaran</div>
+    <p>No: ${escapeHTML(tx.id)}</p>
+    <p>${escapeHTML(new Date(tx.date).toLocaleString("id-ID"))}</p><hr>
+    ${tx.items.map(item=>`
+      <div class="receipt-row"><span>${escapeHTML(item.name)}<br>${item.qty} x ${money(item.price)}</span><strong>${money(item.price*item.qty)}</strong></div>
+    `).join("")}
+    <hr>
+    <div class="receipt-row"><span>Total</span><strong>${money(tx.total)}</strong></div>
+    <div class="receipt-row"><span>Dibayar</span><strong>${money(tx.paid)}</strong></div>
+    <div class="receipt-row"><span>Kembalian</span><strong>${money(tx.change)}</strong></div>
+    <p style="text-align:center;margin-top:20px">Terima kasih telah berbelanja!</p>`;
+  $("receipt").classList.add("open");
+}
+function closeReceipt(){$("receipt").classList.remove("open");}
+function renderHistory(){
+  $("history").innerHTML=history.length?history.slice(0,10).map(tx=>`
+    <tr>
+      <td>${escapeHTML(tx.id)}</td>
+      <td>${escapeHTML(new Date(tx.date).toLocaleString("id-ID"))}</td>
+      <td>${tx.items.reduce((sum,item)=>sum+item.qty,0)}</td>
+      <td><strong>${money(tx.total)}</strong></td>
+      <td>${money(tx.paid)}</td><td>${money(tx.change)}</td>
+      <td><button class="btn btn-light btn-small" onclick="reprintReceipt('${escapeHTML(tx.id)}')">Lihat</button></td>
+    </tr>
+  `).join(""):'<tr><td colspan="7" class="empty">Belum ada transaksi yang selesai.</td></tr>';
+}
+function reprintReceipt(id){
+  const tx=history.find(item=>item.id===id);
+  if(tx)showReceipt(tx);
+}
+function renderSalesSummary(){
+  $("summaryProducts").textContent=products.length;
+  $("summaryTransactions").textContent=history.length;
+  $("summarySales").textContent=money(history.reduce((sum,tx)=>sum+tx.total,0));
+}
+function renderAll(){
+  renderCategories();
+  renderProducts();
+  renderCart();
+  renderHistory();
+  renderSalesSummary();
+}
+function exportHistory(){
+  if(!history.length)return notify("Belum ada riwayat transaksi.");
+  const rows=[
+    ["Nomor Transaksi","Tanggal","Jumlah Item","Total","Dibayar","Kembalian"],
+    ...history.map(tx=>[
+      tx.id,new Date(tx.date).toLocaleString("id-ID"),
+      tx.items.reduce((sum,item)=>sum+item.qty,0),tx.total,tx.paid,tx.change
+    ])
+  ];
+  const csv=rows.map(row=>row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;link.download="novamart-riwayat-transaksi.csv";
+  document.body.appendChild(link);link.click();link.remove();
+  URL.revokeObjectURL(url);
+  notify("File CSV berhasil diekspor.");
+}
+$("search").addEventListener("input",renderProducts);
+$("payment").addEventListener("input",renderCart);
+$("year").textContent=new Date().getFullYear();
+renderAll();
+</script>
+</body>
+</html>
