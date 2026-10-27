@@ -110,24 +110,223 @@ td{color:#50647b}
 @media(max-width:1050px){main{padding:20px}.layout{grid-template-columns:1fr}.cart-panel{position:static}}
 @media(max-width:650px){.topbar{padding:0 14px;height:68px}.brand h1{font-size:17px}.brand p{font-size:9px}.logo{width:38px;height:38px}.status{display:none}main{padding:16px 12px}.page-heading h2{font-size:23px}.panel{padding:15px;border-radius:15px}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.product{padding:11px}.product-name{min-height:auto}.sales-summary{grid-template-columns:1fr}.panel-heading{align-items:flex-start}}
 @media print{body *{visibility:hidden}#receipt,#receipt *{visibility:visible}#receipt{display:block!important;position:absolute;left:0;top:0;width:100%;background:white;padding:15px}#receipt .modal-actions{display:none}}
+
+.login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(
+    135deg,
+    #eaf4ff,
+    #f7fbff,
+    #dcecff
+  );
+}
+.login-card {
+  width: min(420px, 100%);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 18px 55px #17385f18;
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-brand img {
+  display: block;
+  width: 150px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 12px;
+  object-fit: contain;
+}
+
+.login-brand p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.login-field {
+  margin-top: 16px;
+}
+
+.login-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.login-field input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.login-submit {
+  width: 100%;
+  margin-top: 22px;
+}
+
+.login-error {
+  display: none;
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+#appShell[hidden],
+#loginScreen[hidden] {
+  display: none !important;
+}
+
+.logout-btn {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--blue);
+  border-radius: 9px;
+  padding: 9px 12px;
+  font-weight: 750;
+}
+
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: 21px;
+  color: var(--navy);
+}
+
+.brand-text p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+
+#salesReportPanel {
+  margin-bottom: 22px;
+}
+
+#salesReportPanel .sales-summary {
+  margin-bottom: 0;
+}
+
+#salesReportPanel .field {
+  max-width: 360px;
+}
+
+#reportRange {
+  line-height: 1.6;
+}
+
+@media (max-width: 650px) {
+  #salesReportPanel .sales-summary {
+    grid-template-columns: 1fr;
+  }
+
+  #salesReportPanel .panel-heading {
+    flex-wrap: wrap;
+  }
+}
+
 </style>
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">
-    <div class="logo">N</div>
-    <div><h1>NOVAMART</h1><p>POINT OF SALE SYSTEM</p></div>
+
+<section class="login-screen" id="loginScreen">
+  <div class="login-card">
+
+    <div class="login-brand">
+      <img
+        src="logo-novamart.png"
+        alt="Logo Novamart Smart Store"
+      >
+      <p>Teman Pintar Kebutuhan Harian</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="login-field">
+        <label for="loginUsername">USERNAME</label>
+        <input
+          id="loginUsername"
+          type="text"
+          placeholder="Masukkan username"
+          autocomplete="username"
+          required
+        >
+      </div>
+
+      <div class="login-field">
+        <label for="loginPassword">PASSWORD</label>
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="Masukkan password"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <button
+        class="btn btn-primary login-submit"
+        type="submit"
+      >
+        Masuk ke Novamart
+      </button>
+
+      <div class="login-error" id="loginError" role="alert">
+        Username atau password salah.
+      </div>
+    </form>
+
   </div>
-  <div class="header-right">
-    <div class="status">● Kasir Aktif</div>
-    <div class="avatar">N</div>
+</section>
+
+    <div id="appShell" hidden>
+ 
+<div class="brand">
+  <img
+    src="logo-novamart.png"
+    alt="Logo Novamart"
+    class="brand-logo"
+  >
+  <div class="brand-text">
+    <h1>NOVAMART</h1>
+    <p>SMARTER SHOPPING, BETTER LIVING</p>
   </div>
+</div>
+
 </header>
 
 <main>
   <div class="page-heading">
     <div>
-      <div class="eyebrow">POINT OF SALE</div>
+      <div class="eyebrow">SMART RETAIL SYSTEM</div>
       <h2>Transaksi Penjualan</h2>
       <p>Kelola belanja pelanggan dengan cepat dan mudah.</p>
     </div>
@@ -139,6 +338,50 @@ td{color:#50647b}
     <div class="sales-card"><span>Total Transaksi</span><strong id="summaryTransactions">0</strong></div>
     <div class="sales-card"><span>Total Penjualan</span><strong id="summarySales">Rp0</strong></div>
   </section>
+
+  
+<section class="panel history-panel" id="salesReportPanel">
+  <div class="panel-heading">
+    <div>
+      <h3>Rekap Penjualan</h3>
+      <p id="reportRange">Ringkasan omzet berdasarkan periode.</p>
+    </div>
+    <button class="btn btn-primary" onclick="exportSalesReport()">
+      ↓ Ekspor Rekap CSV
+    </button>
+  </div>
+
+  <div class="field">
+    <label for="reportPeriod">PERIODE LAPORAN</label>
+    <select id="reportPeriod">
+      <option value="daily">Harian</option>
+      <option value="weekly">Mingguan</option>
+      <option value="monthly">Bulanan</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="reportDate">PILIH TANGGAL ACUAN</label>
+    <input id="reportDate" type="date" required>
+  </div>
+
+  <section class="sales-summary" style="margin-top:18px">
+    <div class="sales-card">
+      <span>Total Omzet</span>
+      <strong id="reportRevenue">Rp0</strong>
+    </div>
+
+    <div class="sales-card">
+      <span>Jumlah Transaksi</span>
+      <strong id="reportTransactions">0</strong>
+    </div>
+
+    <div class="sales-card">
+      <span>Jumlah Barang Terjual</span>
+      <strong id="reportItems">0</strong>
+    </div>
+  </section>
+</section>
 
   <div class="layout">
     <section class="panel">
@@ -499,13 +742,202 @@ function renderSalesSummary(){
   $("summaryTransactions").textContent=history.length;
   $("summarySales").textContent=money(history.reduce((sum,tx)=>sum+tx.total,0));
 }
-function renderAll(){
+
+function getReportRange() {
+  const dateValue = $("reportDate").value;
+
+  // Jika tanggal belum dipilih, gunakan hari ini.
+  const selected = dateValue
+    ? new Date(dateValue + "T12:00:00")
+    : new Date();
+
+  selected.setHours(0, 0, 0, 0);
+
+  const period = $("reportPeriod").value;
+  let start = new Date(selected);
+  let end = new Date(selected);
+
+  if (period === "weekly") {
+    // Senin sebagai awal minggu.
+    const day = (selected.getDay() + 6) % 7;
+    start.setDate(selected.getDate() - day);
+    end = new Date(start);
+    end.setDate(start.getDate() + 6);
+  } else if (period === "monthly") {
+    start = new Date(
+      selected.getFullYear(),
+      selected.getMonth(),
+      1
+    );
+
+    end = new Date(
+      selected.getFullYear(),
+      selected.getMonth() + 1,
+      0
+    );
+  }
+
+  return { start, end };
+}
+
+function getReportTransactions() {
+  const { start, end } = getReportRange();
+
+  return history.filter(tx => {
+    const txDate = new Date(tx.date);
+    txDate.setHours(0, 0, 0, 0);
+
+    return txDate >= start && txDate <= end;
+  });
+}
+
+function formatReportDate(date) {
+  return date.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+function renderSalesReport() {
+  const dateInput = $("reportDate");
+
+  // Isi tanggal hari ini jika belum dipilih.
+  if (!dateInput.value) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    dateInput.value = `${year}-${month}-${day}`;
+  }
+
+  const { start, end } = getReportRange();
+  const transactions = getReportTransactions();
+
+  const revenue = transactions.reduce(
+    (sum, tx) => sum + Number(tx.total || 0),
+    0
+  );
+
+  const itemCount = transactions.reduce(
+    (sum, tx) => sum + tx.items.reduce(
+      (itemSum, item) => itemSum + Number(item.qty || 0),
+      0
+    ),
+    0
+  );
+
+  $("reportRevenue").textContent = money(revenue);
+  $("reportTransactions").textContent = transactions.length;
+  $("reportItems").textContent = itemCount;
+
+  const period = $("reportPeriod").value;
+  let periodName = "Harian";
+
+  if (period === "weekly") periodName = "Mingguan";
+  if (period === "monthly") periodName = "Bulanan";
+
+  $("reportRange").textContent =
+    periodName + ": " +
+    formatReportDate(start) +
+    (period === "daily"
+      ? ""
+      : " – " + formatReportDate(end));
+}
+
+function exportSalesReport() {
+  const transactions = getReportTransactions();
+
+  if (!transactions.length) {
+    return notify(
+      "Tidak ada transaksi pada periode yang dipilih."
+    );
+  }
+
+  const { start, end } = getReportRange();
+  const period = $("reportPeriod").value;
+
+  let periodName = "harian";
+  if (period === "weekly") periodName = "mingguan";
+  if (period === "monthly") periodName = "bulanan";
+
+  const rows = [
+    ["Laporan Rekap Penjualan Novamart"],
+    ["Periode", periodName],
+    ["Mulai", formatReportDate(start)],
+    ["Sampai", formatReportDate(end)],
+    [],
+    [
+      "Nomor Transaksi",
+      "Tanggal",
+      "Jumlah Item",
+      "Total Omzet"
+    ],
+    ...transactions.map(tx => [
+      tx.id,
+      new Date(tx.date).toLocaleString("id-ID"),
+      tx.items.reduce(
+        (sum, item) => sum + Number(item.qty || 0),
+        0
+      ),
+      tx.total
+    ]),
+    [],
+    [
+      "TOTAL",
+      "",
+      transactions.reduce(
+        (sum, tx) => sum + tx.items.reduce(
+          (itemSum, item) => itemSum + Number(item.qty || 0),
+          0
+        ),
+        0
+      ),
+      transactions.reduce(
+        (sum, tx) => sum + Number(tx.total || 0),
+        0
+      )
+    ]
+  ];
+
+  const csv = rows.map(row =>
+    row.map(value =>
+      '"' + String(value ?? "").replace(/"/g, '""') + '"'
+    ).join(",")
+  ).join("\r\n");
+
+  const blob = new Blob(
+    ["\uFEFF" + csv],
+    { type: "text/csv;charset=utf-8;" }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download =
+    "novamart-rekap-" + periodName + "-" +
+    $("reportDate").value + ".csv";
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  notify("Rekap penjualan berhasil diekspor.");
+}
+
+function renderAll() {
   renderCategories();
   renderProducts();
   renderCart();
   renderHistory();
   renderSalesSummary();
+  renderSalesReport();
 }
+
 function exportHistory(){
   if(!history.length)return notify("Belum ada riwayat transaksi.");
   const rows=[
@@ -526,7 +958,40 @@ function exportHistory(){
 }
 $("search").addEventListener("input",renderProducts);
 $("payment").addEventListener("input",renderCart);
+$("reportPeriod").addEventListener("change", renderSalesReport);
+$("reportDate").addEventListener("change", renderSalesReport);
 $("year").textContent=new Date().getFullYear();
+
+const DEMO_USERNAME = "Novamart-ceria";
+const DEMO_PASSWORD = "novamart123";
+
+$("loginForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const username = $("loginUsername").value.trim();
+  const password = $("loginPassword").value;
+
+  if (
+    username === DEMO_USERNAME &&
+    password === DEMO_PASSWORD
+  ) {
+    $("loginError").style.display = "none";
+    $("loginScreen").hidden = true;
+    $("appShell").hidden = false;
+    $("loginPassword").value = "";
+
+    renderAll();
+  } else {
+    $("loginError").style.display = "block";
+  }
+});
+
+function logoutDemo() {
+  $("appShell").hidden = true;
+  $("loginScreen").hidden = false;
+  $("loginForm").reset();
+  $("loginError").style.display = "none";
+}
 renderAll();
 </script>
 </body>
