@@ -253,6 +253,105 @@ td{color:#50647b}
   }
 }
 
+
+/* PEMBAYARAN QRIS */
+.qris-payment {
+  display: none;
+  text-align: center;
+  padding: 18px;
+  margin-top: 14px;
+  background: #f0f7ff;
+  border: 1px solid #dcecff;
+  border-radius: 14px;
+}
+
+.qris-payment.show {
+  display: block;
+}
+
+.qris-payment h4 {
+  color: var(--navy);
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.qris-payment p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.qris-image {
+  display: block;
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  margin: 16px auto;
+  border-radius: 10px;
+  background: white;
+}
+
+.qris-placeholder {
+  width: 220px;
+  max-width: 100%;
+  min-height: 180px;
+  margin: 16px auto;
+  padding: 24px 16px;
+  display: grid;
+  place-items: center;
+  background: white;
+  border: 2px dashed #9fc5eb;
+  border-radius: 10px;
+  color: var(--blue);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* PEMBAYARAN QRIS */
+.qris-payment {
+  display: none;
+  text-align: center;
+  padding: 18px;
+  margin-top: 14px;
+  background: #f0f7ff;
+  border: 1px solid #dcecff;
+  border-radius: 14px;
+}
+
+.qris-payment.show {
+  display: block;
+}
+
+.qris-payment h4 {
+  color: var(--navy);
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.qris-payment p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.qris-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border: 1px dashed #2f6eae;
+  border-radius: 12px;
+}
+
+.qris-image {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  object-fit: contain;
+}
+
+
 </style>
 </head>
 <body>
@@ -311,10 +410,10 @@ td{color:#50647b}
  
 <div class="brand">
   <img
-  src="./logo-novamart.png"
-  alt="Logo Novamart"
-  class="brand-logo"
->
+    src="logo-novamart.png"
+    alt="Logo Novamart"
+    class="brand-logo"
+  >
   <div class="brand-text">
     <h1>NOVAMART</h1>
     <p>SMARTER SHOPPING, BETTER LIVING</p>
@@ -403,11 +502,49 @@ td{color:#50647b}
       <div class="summary">
         <div class="summary-row"><span>Total jumlah barang</span><strong id="totalQty">0</strong></div>
         <div class="summary-row total"><span>Total Belanja</span><strong id="total">Rp0</strong></div>
-        <div class="field">
-          <label for="payment">UANG PEMBAYARAN (RUPIAH)</label>
-          <input id="payment" type="number" min="0" step="1" placeholder="Masukkan uang dari pelanggan">
-        </div>
-        <div class="change-box"><span>Kembalian pelanggan</span><strong id="change">Rp0</strong></div>
+          
+<div class="field">
+  <label for="paymentMethod">METODE PEMBAYARAN</label>
+  <select id="paymentMethod">
+    <option value="tunai">Tunai</option>
+    <option value="qris">QRIS</option>
+  </select>
+</div>
+
+<div class="field" id="cashPaymentField">
+  <label for="payment">UANG PEMBAYARAN (RUPIAH)</label>
+  <input
+    id="payment"
+    type="number"
+    min="0"
+    step="1"
+    placeholder="Masukkan uang dari pelanggan"
+  >
+</div>
+
+<div class="qris-payment" id="qrisPayment">
+  <h4>Pembayaran QRIS</h4>
+  <p>
+    Total pembayaran:
+    <strong id="qrisTotal">Rp0</strong>
+  </p>
+
+ <div class="qris-placeholder" id="qrisPlaceholder">
+  <img
+    src="QRIS.jpeg"
+    alt="QRIS Novamart"
+    class="qris-image"
+  >
+</div>
+
+  <p>
+    Untuk transaksi nyata, pelanggan harus membayar
+    melalui QRIS resmi. Website ini belum memverifikasi
+    pembayaran secara otomatis.
+  </p>
+</div>
+
+                  <div class="change-box"><span>Kembalian pelanggan</span><strong id="change">Rp0</strong></div>
         <button class="btn btn-primary checkout" onclick="checkout()">✓ Proses Pembayaran</button>
       </div>
     </section>
@@ -637,6 +774,20 @@ function removeFromCart(id){
 }
 function renderCart(){
   $("cart").innerHTML=cart.length?cart.map(item=>`
+    ...
+  `).join(""):'<div class="empty">Keranjang masih kosong.<br>Pilih produk untuk memulai transaksi.</div>';
+
+  const qty=cart.reduce((sum,item)=>sum+item.qty,0);
+  const total=getTotal(),paid=Number($("payment").value);
+
+  $("itemCount").textContent=qty+" item";
+  $("totalQty").textContent=qty;
+  $("total").textContent=money(total);
+  $("change").textContent=money(paid>=total&&total>0?paid-total:0);
+}
+
+function renderCart(){
+  $("cart").innerHTML=cart.length?cart.map(item=>`
     <div class="cart-item">
       <div><strong>${escapeHTML(item.name)}</strong><small>${money(item.price)} / item</small>
         <div class="quantity">
@@ -651,7 +802,16 @@ function renderCart(){
     </div>
   `).join(""):'<div class="empty">Keranjang masih kosong.<br>Pilih produk untuk memulai transaksi.</div>';
   const qty=cart.reduce((sum,item)=>sum+item.qty,0);
-  const total=getTotal(),paid=Number($("payment").value);
+ const total = getTotal();
+const method = $("paymentMethod").value;
+const paid = Number($("payment").value);
+
+$("qrisTotal").textContent = money(total);
+$("qrisPayment").classList.toggle("show", method === "qris");
+$("cashPaymentField").style.display =
+  method === "qris" ? "none" : "block";
+document.querySelector(".change-box").style.display =
+  method === "qris" ? "none" : "block";
   $("itemCount").textContent=qty+" item";
   $("totalQty").textContent=qty;
   $("total").textContent=money(total);
