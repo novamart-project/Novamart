@@ -53,6 +53,24 @@ input:focus,select:focus{border-color:#79afe6;outline:2px solid #dceeff}
 .product-code{font-size:10px;color:var(--muted);margin-top:5px}
 .product-price{color:var(--blue);font-size:14px;font-weight:800;margin-top:12px}
 .product-stock{font-size:10px;color:var(--muted);margin-top:7px}
+.stock-alert {
+  margin-bottom: 16px;
+  padding: 13px 15px;
+  border: 1px solid #f2d69a;
+  background: #fff9e9;
+  color: #805b12;
+  border-radius: 11px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.stock-alert:empty {
+  display: none;
+}
+
+.stock-alert.show {
+  display: block;
+}
 .product-actions{display:flex;gap:6px;margin-top:10px}
 .product-actions button{flex:1}
 .cart-panel{position:sticky;top:96px}
@@ -350,13 +368,229 @@ td{color:#50647b}
   height: auto;
   object-fit: contain;
 }
+/* NAVBAR MENU */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 76px;
+  z-index: 4;
+  overflow-x: auto;
+}
 
+.nav-menu {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 11px 16px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nav-menu:hover,
+.nav-menu.active {
+  background: var(--light);
+  color: var(--blue);
+}
+
+.page-section {
+  display: none;
+}
+
+.page-section.active {
+  display: block;
+}
+
+@media(max-width:650px) {
+  .navbar {
+    padding: 10px 12px;
+    top: 68px;
+  }
+
+  .nav-menu {
+    padding: 10px 12px;
+  }
+}
+
+
+/* Dashboard minimalis */
+.dashboard-note{margin-top:18px}
+.dashboard-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.shortcut{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:left;padding:17px;border:1px solid var(--border);border-radius:13px;background:#fff;color:var(--text);cursor:pointer}
+.shortcut:hover{border-color:#a8c9e9;background:#f8fbff}
+.shortcut span{font-size:21px}
+.shortcut strong{font-size:13px;color:var(--navy)}
+.shortcut small{font-size:11px;color:var(--muted)}
+@media(max-width:650px){.dashboard-shortcuts{grid-template-columns:1fr}.topbar{gap:10px}.header-right{gap:6px}.status{display:none}.navbar{top:68px}}
+
+
+
+/* ===== NOVAMART VISUAL REFINEMENT: MINIMAL MODERN ===== */
+:root{
+  --navy:#142f50;
+  --blue:#2868a8;
+  --light:#edf5fd;
+  --bg:#f5f8fc;
+  --text:#26384d;
+  --muted:#7b8ba0;
+  --border:#e4ebf3;
+  --green:#16845b;
+  --red:#c34d55;
+}
+html{scroll-behavior:smooth}
+body{background:#f5f8fc;color:var(--text);font-size:14px}
+button,input,select{font-family:inherit}
+.topbar{
+  min-height:76px;height:auto;padding:12px clamp(16px,3vw,38px);
+  background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid #e8eef5;box-shadow:0 2px 12px rgba(20,47,80,.035);
+}
+.brand{gap:12px}
+.brand-logo{width:42px;height:42px;object-fit:contain}
+.brand-text h1{font-size:19px;letter-spacing:1.25px;font-weight:800}
+.brand-text p{font-size:9px;letter-spacing:1.35px;font-weight:650}
+.header-right{gap:14px}
+.status{font-size:11px;font-weight:700;padding:8px 11px;border-radius:30px;background:#eef8f2}
+.logout-btn,.header-right .btn{
+  border-radius:10px;padding:9px 14px;font-size:11px;font-weight:700;
+}
+.navbar{
+  position:sticky;top:76px;z-index:4;
+  min-height:58px;padding:8px clamp(16px,3vw,38px);
+  gap:6px;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid #e8eef5;box-shadow:0 4px 12px rgba(20,47,80,.025);
+}
+.nav-menu{
+  position:relative;padding:11px 15px;border-radius:9px;
+  color:#718198;font-size:12px;font-weight:700;transition:all .18s ease;
+}
+.nav-menu:hover{background:#f3f7fc;color:var(--navy)}
+.nav-menu.active{background:#edf5fd;color:var(--blue)}
+.nav-menu.active:after{
+  content:"";position:absolute;left:15px;right:15px;bottom:2px;height:2px;
+  border-radius:3px;background:var(--blue);
+}
+main{width:min(1440px,100%);margin:0 auto;padding:30px clamp(16px,3vw,38px) 42px}
+.page-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:24px}
+.page-heading h2{font-size:27px;letter-spacing:-.7px;color:var(--navy);margin:5px 0 6px}
+.page-heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.6}
+.eyebrow{font-size:10px;letter-spacing:1.4px;font-weight:800;color:var(--blue)}
+.panel,.sales-card{
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  box-shadow:0 5px 22px rgba(26,58,92,.035);
+}
+.panel{padding:22px}
+.panel-heading{gap:14px;margin-bottom:18px}
+.panel-heading h3{font-size:15px;color:var(--navy);font-weight:750;margin:0 0 5px}
+.panel-heading p{font-size:11px;line-height:1.6;color:var(--muted);margin:0}
+.sales-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.sales-card{padding:21px 22px;min-height:112px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.sales-card span{font-size:11px;color:var(--muted);font-weight:650}
+.sales-card strong{font-size:25px;line-height:1.15;letter-spacing:-.6px;color:var(--navy)}
+.dashboard-note{margin-top:22px}
+.dashboard-shortcuts{gap:14px}
+.shortcut{
+  min-height:116px;padding:19px;border-radius:13px;
+  border:1px solid #e7edf5;background:linear-gradient(145deg,#fff,#fbfdff);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.shortcut:hover{transform:translateY(-2px);border-color:#b7d0e9;box-shadow:0 8px 18px rgba(35,91,145,.07)}
+.shortcut span{width:36px;height:36px;display:grid;place-items:center;background:#edf5fd;border-radius:10px;font-size:18px}
+.shortcut strong{font-size:13px}
+.shortcut small{font-size:11px;line-height:1.5}
+.btn{border-radius:10px;font-weight:700;transition:all .18s ease}
+.btn-primary{background:var(--blue);box-shadow:0 4px 10px rgba(40,104,168,.13)}
+.btn-primary:hover{background:#20598f;transform:translateY(-1px)}
+.btn-light{border:1px solid var(--border);background:#fff;color:var(--navy)}
+input,select{border:1px solid #dfe7f0;border-radius:10px;background:#fff;color:var(--text);outline:none}
+input:focus,select:focus{border-color:#80add8;box-shadow:0 0 0 3px rgba(40,104,168,.09)}
+.search{border:1px solid #e2eaf3;border-radius:11px;background:#fbfdff}
+.search input{border:0;background:transparent;box-shadow:none}
+.categories{gap:8px}
+.categories button,.category-btn{border-radius:30px}
+.product{border:1px solid #e7edf4;border-radius:13px;transition:all .18s ease}
+.product:hover{border-color:#a9c8e5;box-shadow:0 7px 18px rgba(31,75,120,.07);transform:translateY(-1px)}
+.cart-panel{border-radius:16px}
+.cart-item{border-bottom:1px solid #edf1f6}
+.summary{border-top:1px solid #edf1f6}
+table{white-space:nowrap}
+th{background:#f6f9fd;color:#718198;font-weight:800}
+td,th{padding:13px 14px}
+tbody tr:hover{background:#fafcff}
+.modal-content{border:1px solid var(--border);border-radius:18px;box-shadow:0 20px 60px rgba(15,39,66,.18)}
+.login-screen{background:radial-gradient(circle at 15% 15%,#e3f0ff 0,transparent 35%),linear-gradient(135deg,#f7faff,#edf4fc)}
+.login-card{border-radius:22px;box-shadow:0 24px 70px rgba(20,47,80,.10);padding:34px}
+.login-submit{min-height:44px}
+.footer{padding-top:28px}
+@media(max-width:800px){
+  .navbar{top:68px}
+  main{padding-top:22px}
+  .sales-summary{gap:11px}
+  .sales-card{padding:17px}
+}
+@media(max-width:650px){
+  .topbar{min-height:68px;padding:10px 14px}
+  .brand-logo{width:36px;height:36px}
+  .brand-text h1{font-size:16px}
+  .brand-text p{font-size:8px;letter-spacing:.8px}
+  .header-right .btn{padding:8px 10px;font-size:10px}
+  .navbar{top:68px;min-height:54px;padding:7px 10px;gap:3px}
+  .nav-menu{padding:10px 11px;font-size:11px}
+  .nav-menu.active:after{left:11px;right:11px}
+  main{padding:19px 12px 30px}
+  .page-heading{align-items:flex-start;flex-direction:column}
+  .page-heading h2{font-size:23px}
+  .page-heading>.btn{width:100%}
+  .sales-summary{grid-template-columns:1fr;gap:10px}
+  .sales-card{min-height:88px;padding:16px 18px}
+  .sales-card strong{font-size:22px}
+  .panel{padding:16px;border-radius:14px}
+  .dashboard-shortcuts{grid-template-columns:1fr}
+  .shortcut{min-height:95px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;transition:none!important}
+}
+
+
+/* ===== DASHBOARD ANALYTICS ===== */
+.dashboard-kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}
+.dashboard-kpis .sales-card{min-height:126px;padding:18px 20px;gap:9px}
+.kpi-label{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-weight:700}
+.kpi-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.kpi-dot.blue{background:#3c83c6}.kpi-dot.teal{background:#48b9b4}.kpi-dot.purple{background:#8b82d6}.kpi-dot.amber{background:#d6a34b}
+.dashboard-kpis .sales-card strong{font-size:clamp(18px,2vw,24px);overflow-wrap:anywhere}
+.dashboard-kpis .sales-card small{font-size:10px;color:#91a0b2}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,1fr);gap:18px;margin-bottom:18px}
+.chart-panel{min-width:0;min-height:300px}
+.live-indicator{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;color:#318c76;background:#eff9f5;border-radius:30px;padding:7px 10px;font-size:9px;font-weight:750}
+.live-indicator i{width:6px;height:6px;border-radius:50%;background:#36a886;box-shadow:0 0 0 3px #d9f2e8}
+.chart-total{font-size:24px;font-weight:800;color:var(--navy);letter-spacing:-.5px;margin-top:3px}
+.chart-subtitle{font-size:10px;color:#8a99aa;margin-top:3px}
+.chart-area{width:100%;margin-top:10px}
+.chart-area svg{display:block;width:100%;height:auto;overflow:visible}
+.top-products-chart{display:flex;flex-direction:column;gap:19px;padding-top:10px}
+.top-product-meta{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.top-product-rank{width:23px;height:23px;border-radius:7px;display:grid;place-items:center;background:#edf5fd;color:#3979b3;font-size:10px;font-weight:800;flex-shrink:0}
+.top-product-name{font-size:11px;color:#56677c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.top-product-meta strong{font-size:11px;color:var(--navy)}
+.top-product-track{height:7px;background:#eff3f8;border-radius:10px;overflow:hidden;margin-left:32px}
+.top-product-track span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#54b9d2,#3c83c6);transition:width .45s ease}
+.chart-empty{padding:28px 12px;text-align:center;color:#98a5b4;font-size:11px;line-height:1.6}
+.dashboard-recent{margin-bottom:10px}
+.transaction-status{display:inline-block;background:#edf8f2;color:#21845e;border-radius:30px;padding:5px 9px;font-size:10px;font-weight:750}
+@media(max-width:950px){.dashboard-grid{grid-template-columns:1fr}.dashboard-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.dashboard-kpis{grid-template-columns:1fr 1fr;gap:9px}.dashboard-kpis .sales-card{min-height:108px;padding:14px}.dashboard-kpis .sales-card strong{font-size:17px}.live-indicator{font-size:8px}.chart-panel{padding:15px}.chart-total{font-size:21px}}
 
 </style>
 </head>
 <body>
-<header class="topbar">
-
 <section class="login-screen" id="loginScreen">
   <div class="login-card">
 
@@ -405,10 +639,9 @@ td{color:#50647b}
 
   </div>
 </section>
-
-    <div id="appShell" hidden>
- 
-<div class="brand">
+<div id="appShell" hidden>
+  <header class="topbar">
+    <div class="brand">
   <img
     src="logo-novamart.png"
     alt="Logo Novamart"
@@ -419,151 +652,291 @@ td{color:#50647b}
     <p>SMARTER SHOPPING, BETTER LIVING</p>
   </div>
 </div>
-
-</header>
-
-<main>
-  <div class="page-heading">
-    <div>
-      <div class="eyebrow">SMART RETAIL SYSTEM</div>
-      <h2>Transaksi Penjualan</h2>
-      <p>Kelola belanja pelanggan dengan cepat dan mudah.</p>
+    <div class="header-right">
+      <span class="status">● Sistem Aktif</span>
+      <button class="btn btn-light btn-small" type="button" onclick="logoutDemo()">Keluar</button>
     </div>
-    <button class="btn btn-light" onclick="resetCart()">↻ Transaksi Baru</button>
-  </div>
+  </header>
 
-  <section class="sales-summary">
-    <div class="sales-card"><span>Total Produk</span><strong id="summaryProducts">0</strong></div>
-    <div class="sales-card"><span>Total Transaksi</span><strong id="summaryTransactions">0</strong></div>
-    <div class="sales-card"><span>Total Penjualan</span><strong id="summarySales">Rp0</strong></div>
+  <nav class="navbar" aria-label="Navigasi utama">
+    <button class="nav-menu active" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="nav-menu" onclick="showPage('kasir')">Kasir</button>
+    <button class="nav-menu" onclick="showPage('produk')">Produk</button>
+    <button class="nav-menu" onclick="showPage('riwayat')">Riwayat Transaksi</button>
+    <button class="nav-menu" onclick="showPage('laporan')">Laporan Penjualan</button>
+  </nav>
+
+  <main>
+
+  <!-- HALAMAN DASHBOARD -->
+  <section id="page-dashboard" class="page-section active">
+    <div class="page-heading">
+      <div>
+        <div class="eyebrow">RINGKASAN TOKO</div>
+        <h2>Dashboard</h2>
+        <p>Pantau performa dan aktivitas penjualan NOVAMART secara real-time.</p>
+      </div>
+      <button class="btn btn-primary" onclick="showPage('kasir')">＋ Mulai Transaksi</button>
+    </div>
+
+    <section class="sales-summary dashboard-kpis">
+      <div class="sales-card"><div class="kpi-label"><span class="kpi-dot blue"></span>Total Penjualan</div><strong id="summarySales">Rp0</strong><small id="summarySalesHint">Akumulasi seluruh transaksi</small></div>
+      <div class="sales-card"><div class="kpi-label"><span class="kpi-dot teal"></span>Total Transaksi</div><strong id="summaryTransactions">0</strong><small>Transaksi berhasil</small></div>
+      <div class="sales-card"><div class="kpi-label"><span class="kpi-dot purple"></span>Rata-rata Transaksi</div><strong id="summaryAverage">Rp0</strong><small>Nilai rata-rata per transaksi</small></div>
+      <div class="sales-card"><div class="kpi-label"><span class="kpi-dot amber"></span>Produk Terjual</div><strong id="summaryItemsSold">0</strong><small id="summaryProducts">0 produk tersedia</small></div>
+    </section>
+
+    <div class="dashboard-grid">
+      <section class="panel chart-panel revenue-panel">
+        <div class="panel-heading">
+          <div><h3>Tren Penjualan</h3><p>Pergerakan omzet selama 7 hari terakhir</p></div>
+          <span class="live-indicator"><i></i> Otomatis diperbarui</span>
+        </div>
+        <div class="chart-total" id="weeklyRevenueTotal">Rp0</div>
+        <div class="chart-subtitle">Total omzet 7 hari terakhir</div>
+        <div id="revenueChart" class="chart-area" role="img" aria-label="Grafik tren penjualan tujuh hari terakhir"></div>
+      </section>
+
+      <section class="panel chart-panel">
+        <div class="panel-heading"><div><h3>Produk Terlaris</h3><p>Berdasarkan jumlah barang terjual</p></div></div>
+        <div id="topProductsChart" class="top-products-chart"><div class="chart-empty">Belum ada transaksi penjualan.</div></div>
+      </section>
+    </div>
+
+    <section class="panel dashboard-recent">
+      <div class="panel-heading">
+        <div><h3>Transaksi Terbaru</h3><p>Aktivitas penjualan yang paling baru tercatat</p></div>
+        <button class="btn btn-light btn-small" onclick="showPage('riwayat')">Lihat semua</button>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>No. Transaksi</th><th>Waktu</th><th>Item</th><th>Total</th><th>Status</th></tr></thead><tbody id="dashboardRecent"></tbody></table></div>
+    </section>
   </section>
 
-  
-<section class="panel history-panel" id="salesReportPanel">
-  <div class="panel-heading">
-    <div>
-      <h3>Rekap Penjualan</h3>
-      <p id="reportRange">Ringkasan omzet berdasarkan periode.</p>
-    </div>
-    <button class="btn btn-primary" onclick="exportSalesReport()">
-      ↓ Ekspor Rekap CSV
-    </button>
-  </div>
+  <!-- HALAMAN LAPORAN -->
+  <section id="page-laporan" class="page-section">
 
-  <div class="field">
-    <label for="reportPeriod">PERIODE LAPORAN</label>
-    <select id="reportPeriod">
-      <option value="daily">Harian</option>
-      <option value="weekly">Mingguan</option>
-      <option value="monthly">Bulanan</option>
-    </select>
-  </div>
+    <section class="panel history-panel" id="salesReportPanel">
 
-  <div class="field">
-    <label for="reportDate">PILIH TANGGAL ACUAN</label>
-    <input id="reportDate" type="date" required>
-  </div>
+      <div class="panel-heading">
+        <div>
+          <h3>Rekap Penjualan</h3>
+          <p id="reportRange">Ringkasan omzet berdasarkan periode.</p>
+        </div>
+        <button class="btn btn-primary" onclick="exportSalesReport()">
+          ↓ Ekspor Rekap CSV
+        </button>
+      </div>
 
-  <section class="sales-summary" style="margin-top:18px">
-    <div class="sales-card">
-      <span>Total Omzet</span>
-      <strong id="reportRevenue">Rp0</strong>
-    </div>
+      <div class="field">
+        <label for="reportPeriod">PERIODE LAPORAN</label>
+        <select id="reportPeriod">
+          <option value="daily">Harian</option>
+          <option value="weekly">Mingguan</option>
+          <option value="monthly">Bulanan</option>
+        </select>
+      </div>
 
-    <div class="sales-card">
-      <span>Jumlah Transaksi</span>
-      <strong id="reportTransactions">0</strong>
-    </div>
+      <div class="field">
+        <label for="reportDate">PILIH TANGGAL ACUAN</label>
+        <input id="reportDate" type="date" required>
+      </div>
 
-    <div class="sales-card">
-      <span>Jumlah Barang Terjual</span>
-      <strong id="reportItems">0</strong>
-    </div>
+      <section class="sales-summary" style="margin-top:18px">
+        <div class="sales-card">
+          <span>Total Omzet</span>
+          <strong id="reportRevenue">Rp0</strong>
+        </div>
+
+        <div class="sales-card">
+          <span>Jumlah Transaksi</span>
+          <strong id="reportTransactions">0</strong>
+        </div>
+
+        <div class="sales-card">
+          <span>Jumlah Barang Terjual</span>
+          <strong id="reportItems">0</strong>
+        </div>
+      </section>
+
+    </section>
+
   </section>
-</section>
 
-  <div class="layout">
+
+  <!-- HALAMAN KASIR -->
+  <section id="page-kasir" class="page-section">
+
+    <div class="layout">
+
+      <!-- KATALOG PRODUK KASIR -->
+      <section class="panel">
+
+        <div class="panel-heading">
+          <div>
+            <h3>Pilih Produk</h3>
+            <p>Cari produk lalu klik untuk memasukkannya ke keranjang.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openProductForm()">+ Tambah</button>
+        </div>
+
+        <div class="search">
+          <span>⌕</span>
+          <input id="search" type="search" placeholder="Cari nama atau kode produk..." autocomplete="off">
+        </div>
+
+        <div class="categories" id="categories"></div>
+        <div class="stock-alert" id="stockAlert" role="status" aria-live="polite"></div>
+        <div class="products" id="products"></div>
+
+      </section>
+
+
+      <!-- KERANJANG DAN PEMBAYARAN -->
+      <section class="panel cart-panel">
+
+        <div class="panel-heading">
+          <div>
+            <h3>Keranjang Belanja</h3>
+            <p>Periksa pesanan sebelum pembayaran.</p>
+          </div>
+          <span class="cart-count" id="itemCount">0 item</span>
+        </div>
+
+        <div class="cart-list" id="cart"></div>
+
+        <div class="summary">
+
+          <div class="summary-row">
+            <span>Total jumlah barang</span>
+            <strong id="totalQty">0</strong>
+          </div>
+
+          <div class="summary-row total">
+            <span>Total Belanja</span>
+            <strong id="total">Rp0</strong>
+          </div>
+
+          <div class="field">
+            <label for="paymentMethod">METODE PEMBAYARAN</label>
+            <select id="paymentMethod">
+              <option value="tunai">Tunai</option>
+              <option value="qris">QRIS</option>
+            </select>
+          </div>
+
+          <div class="field" id="cashPaymentField">
+            <label for="payment">UANG PEMBAYARAN (RUPIAH)</label>
+            <input
+              id="payment"
+              type="number"
+              min="0"
+              step="1"
+              placeholder="Masukkan uang dari pelanggan"
+            >
+          </div>
+
+          <div class="qris-payment" id="qrisPayment">
+            <h4>Pembayaran QRIS</h4>
+            <p>
+              Total pembayaran:
+              <strong id="qrisTotal">Rp0</strong>
+            </p>
+
+            <div class="qris-placeholder" id="qrisPlaceholder">
+              <img
+                src="./QRIS.jpeg"
+                alt="QRIS Novamart"
+                class="qris-image"
+              >
+            </div>
+
+            <p>
+              Untuk transaksi nyata, pelanggan harus membayar
+              melalui QRIS resmi. Website ini belum memverifikasi
+              pembayaran secara otomatis.
+            </p>
+          </div>
+
+          <div class="change-box">
+            <span>Kembalian pelanggan</span>
+            <strong id="change">Rp0</strong>
+          </div>
+
+          <button class="btn btn-primary checkout" onclick="checkout()">
+            ✓ Proses Pembayaran
+          </button>
+
+        </div>
+      </section>
+
+    </div>
+
+  </section>
+
+
+  <!-- HALAMAN PRODUK -->
+  <section id="page-produk" class="page-section">
+
+    <div class="page-heading">
+      <div>
+        <div class="eyebrow">PRODUCT MANAGEMENT</div>
+        <h2>Manajemen Produk</h2>
+        <p>Kelola daftar produk, harga, dan stok Novamart.</p>
+      </div>
+    </div>
+
     <section class="panel">
       <div class="panel-heading">
-        <div><h3>Pilih Produk</h3><p>Cari produk lalu klik untuk memasukkannya ke keranjang.</p></div>
-        <button class="btn btn-primary" onclick="openProductForm()">+ Tambah</button>
+        <h3>Daftar Produk</h3>
+        <button class="btn btn-primary" onclick="openProductForm()">
+          + Tambah Produk
+        </button>
       </div>
-      <div class="search"><span>⌕</span><input id="search" type="search" placeholder="Cari nama atau kode produk..." autocomplete="off"></div>
-      <div class="categories" id="categories"></div>
-      <div class="products" id="products"></div>
+
+      <div class="products" id="productManagementList"></div>
     </section>
 
-    <section class="panel cart-panel">
+  </section>
+
+
+  <!-- HALAMAN RIWAYAT -->
+  <section id="page-riwayat" class="page-section">
+
+    <section class="panel history-panel">
       <div class="panel-heading">
-        <div><h3>Keranjang Belanja</h3><p>Periksa pesanan sebelum pembayaran.</p></div>
-        <span class="cart-count" id="itemCount">0 item</span>
+        <div>
+          <h3>Transaksi Terakhir</h3>
+          <p>Riwayat transaksi yang tersimpan di browser ini.</p>
+        </div>
+        <button class="btn btn-light" onclick="exportHistory()">↓ Ekspor CSV</button>
       </div>
-      <div class="cart-list" id="cart"></div>
-      <div class="summary">
-        <div class="summary-row"><span>Total jumlah barang</span><strong id="totalQty">0</strong></div>
-        <div class="summary-row total"><span>Total Belanja</span><strong id="total">Rp0</strong></div>
-          
-<div class="field">
-  <label for="paymentMethod">METODE PEMBAYARAN</label>
-  <select id="paymentMethod">
-    <option value="tunai">Tunai</option>
-    <option value="qris">QRIS</option>
-  </select>
-</div>
 
-<div class="field" id="cashPaymentField">
-  <label for="payment">UANG PEMBAYARAN (RUPIAH)</label>
-  <input
-    id="payment"
-    type="number"
-    min="0"
-    step="1"
-    placeholder="Masukkan uang dari pelanggan"
-  >
-</div>
-
-<div class="qris-payment" id="qrisPayment">
-  <h4>Pembayaran QRIS</h4>
-  <p>
-    Total pembayaran:
-    <strong id="qrisTotal">Rp0</strong>
-  </p>
-
- <div class="qris-placeholder" id="qrisPlaceholder">
-  <img
-    src="./QRIS.jpeg"
-    alt="QRIS Novamart"
-    class="qris-image"
-  >
-</div>
-
-  <p>
-    Untuk transaksi nyata, pelanggan harus membayar
-    melalui QRIS resmi. Website ini belum memverifikasi
-    pembayaran secara otomatis.
-  </p>
-</div>
-
-                  <div class="change-box"><span>Kembalian pelanggan</span><strong id="change">Rp0</strong></div>
-        <button class="btn btn-primary checkout" onclick="checkout()">✓ Proses Pembayaran</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>No. Transaksi</th>
+              <th>Tanggal</th>
+              <th>Jumlah Item</th>
+              <th>Total</th>
+              <th>Dibayar</th>
+              <th>Kembalian</th>
+              <th>Struk</th>
+            </tr>
+          </thead>
+          <tbody id="history"></tbody>
+        </table>
       </div>
     </section>
+
+  </section>
+
+  <div class="footer">
+    Novamart © <span id="year"></span> · Smart Shopping, Simple Living
   </div>
 
-  <section class="panel history-panel">
-    <div class="panel-heading">
-      <div><h3>Transaksi Terakhir</h3><p>Riwayat transaksi yang tersimpan di browser ini.</p></div>
-      <button class="btn btn-light" onclick="exportHistory()">↓ Ekspor CSV</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>No. Transaksi</th><th>Tanggal</th><th>Jumlah Item</th><th>Total</th><th>Dibayar</th><th>Kembalian</th><th>Struk</th></tr></thead>
-        <tbody id="history"></tbody>
-      </table>
-    </div>
-  </section>
-  <div class="footer">Novamart © <span id="year"></span> · Smart Shopping, Simple Living</div>
 </main>
+</div>
 
 <div class="modal" id="productModal">
   <div class="modal-content">
@@ -658,7 +1031,33 @@ function setCategory(category){
   renderCategories();
   renderProducts();
 }
+function renderStockAlert() {
+  const lowStock = products.filter(p => Number(p.stock) <= 5);
+  const alertBox = $("stockAlert");
+
+  if (!lowStock.length) {
+    alertBox.classList.remove("show");
+    alertBox.innerHTML = "";
+    return;
+  }
+
+  const details = lowStock.map(p =>
+    `${escapeHTML(p.name)} (${
+      Number(p.stock) <= 0
+        ? "habis"
+        : p.stock + " tersisa"
+    })`
+  ).join(", ");
+
+  alertBox.innerHTML = `
+    <strong>⚠️ Peringatan stok menipis: ${lowStock.length} produk</strong>
+    <div>${details}</div>
+  `;
+
+  alertBox.classList.add("show");
+}
 function renderProducts(){
+  renderStockAlert();
   const query=$("search").value.trim().toLowerCase();
   const filtered=products.filter(p=>
     (p.name.toLowerCase().includes(query)||p.id.toLowerCase().includes(query))&&
@@ -679,6 +1078,49 @@ function renderProducts(){
       </div>
     </div>
   `).join(""):'<div class="empty">Produk tidak ditemukan.</div>';
+}
+function renderProductManagement() {
+  const container = $("productManagementList");
+
+  if (!container) return;
+
+  container.innerHTML = products.length
+    ? products.map(p => `
+      <div class="product">
+        <div class="product-icon">
+          ${escapeHTML(p.icon || "🛍️")}
+        </div>
+
+        <div class="product-name">
+          ${escapeHTML(p.name)}
+        </div>
+
+        <div class="product-code">
+          Kode: ${escapeHTML(p.id)}
+        </div>
+
+        <div class="product-price">
+          ${money(p.price)}
+        </div>
+
+        <div class="product-stock">
+          Stok: ${p.stock}
+        </div>
+
+        <div class="product-actions">
+          <button class="btn btn-light btn-small"
+            onclick="openProductForm('${escapeHTML(p.id)}')">
+            Edit
+          </button>
+
+          <button class="btn btn-danger btn-small"
+            onclick="deleteProduct('${escapeHTML(p.id)}')">
+            Hapus
+          </button>
+        </div>
+      </div>
+    `).join("")
+    : '<div class="empty">Belum ada produk.</div>';
 }
 function openProductForm(id=null){
   editingProductId=id;
@@ -898,9 +1340,56 @@ function reprintReceipt(id){
   if(tx)showReceipt(tx);
 }
 function renderSalesSummary(){
-  $("summaryProducts").textContent=products.length;
-  $("summaryTransactions").textContent=history.length;
-  $("summarySales").textContent=money(history.reduce((sum,tx)=>sum+tx.total,0));
+  const revenue=history.reduce((sum,tx)=>sum+Number(tx.total||0),0);
+  const transactionCount=history.length;
+  const itemCount=history.reduce((sum,tx)=>sum+(tx.items||[]).reduce((n,item)=>n+Number(item.qty||0),0),0);
+  $("summaryProducts").textContent=products.length+" produk tersedia";
+  $("summaryTransactions").textContent=transactionCount.toLocaleString("id-ID");
+  $("summarySales").textContent=money(revenue);
+  $("summaryAverage").textContent=money(transactionCount?revenue/transactionCount:0);
+  $("summaryItemsSold").textContent=itemCount.toLocaleString("id-ID");
+  renderDashboardCharts();
+}
+
+function renderDashboardCharts(){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const days=[];
+  for(let offset=6;offset>=0;offset--){
+    const day=new Date(today); day.setDate(today.getDate()-offset);
+    const key=day.toLocaleDateString("en-CA");
+    const amount=history.filter(tx=>{
+      const d=new Date(tx.date); d.setHours(0,0,0,0);
+      return d.getTime()===day.getTime();
+    }).reduce((sum,tx)=>sum+Number(tx.total||0),0);
+    days.push({day,key,label:day.toLocaleDateString("id-ID",{weekday:"short"}),amount});
+  }
+  const total=days.reduce((sum,d)=>sum+d.amount,0);
+  $("weeklyRevenueTotal").textContent=money(total);
+  const width=640,height=220,left=58,right=16,top=16,bottom=34;
+  const max=Math.max(1,...days.map(d=>d.amount))*1.18;
+  const x=i=>left+i*(width-left-right)/(days.length-1);
+  const y=v=>top+(height-top-bottom)*(1-v/max);
+  const points=days.map((d,i)=>`${x(i)},${y(d.amount)}`);
+  const path=points.map((pt,i)=>(i?"L":"M")+pt).join(" ");
+  const area=`${path} L ${x(6)},${height-bottom} L ${x(0)},${height-bottom} Z`;
+  const grid=[0,.25,.5,.75,1].map(frac=>{
+    const yy=top+(height-top-bottom)*frac, val=max*(1-frac);
+    return `<line x1="${left}" y1="${yy}" x2="${width-right}" y2="${yy}" stroke="#edf1f6" stroke-width="1"/><text x="${left-9}" y="${yy+4}" text-anchor="end" fill="#91a0b2" font-size="10">${val>=1000000?(val/1000000).toFixed(1)+"jt":val>=1000?Math.round(val/1000)+"rb":Math.round(val)}</text>`;
+  }).join("");
+  const labels=days.map((d,i)=>`<text x="${x(i)}" y="${height-8}" text-anchor="middle" fill="#8292a6" font-size="10">${d.label}</text>`).join("");
+  const dots=days.map((d,i)=>`<circle cx="${x(i)}" cy="${y(d.amount)}" r="4.5" fill="#fff" stroke="#2f82c8" stroke-width="2"><title>${d.label}: ${money(d.amount)}</title></circle>`).join("");
+  $("revenueChart").innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Grafik omzet tujuh hari terakhir">${grid}<defs><linearGradient id="revenueFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#54b9d2" stop-opacity=".24"/><stop offset="100%" stop-color="#54b9d2" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#revenueFill)"/><path d="${path}" fill="none" stroke="#329bc2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${dots}${labels}</svg>`;
+
+  const totals={};
+  history.forEach(tx=>(tx.items||[]).forEach(item=>{
+    const name=String(item.name||"Produk");
+    totals[name]=(totals[name]||0)+Number(item.qty||0);
+  }));
+  const best=Object.entries(totals).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxQty=Math.max(1,...best.map(x=>x[1]));
+  $("topProductsChart").innerHTML=best.length?best.map(([name,qty],i)=>`<div class="top-product-row"><div class="top-product-meta"><span class="top-product-rank">${i+1}</span><span class="top-product-name" title="${escapeHTML(name)}">${escapeHTML(name)}</span><strong>${qty}</strong></div><div class="top-product-track"><span style="width:${qty/maxQty*100}%"></span></div></div>`).join(""):'<div class="chart-empty">Belum ada transaksi penjualan.</div>';
+
+  $("dashboardRecent").innerHTML=history.length?history.slice(0,5).map(tx=>`<tr><td><strong>${escapeHTML(tx.id)}</strong></td><td>${escapeHTML(new Date(tx.date).toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"}))}</td><td>${(tx.items||[]).reduce((n,item)=>n+Number(item.qty||0),0)}</td><td><strong>${money(tx.total)}</strong></td><td><span class="transaction-status">Berhasil</span></td></tr>`).join(""):'<tr><td colspan="5" class="chart-empty">Belum ada transaksi. Mulai transaksi pertama kamu di menu Kasir.</td></tr>';
 }
 
 function getReportRange() {
@@ -1092,6 +1581,7 @@ function exportSalesReport() {
 function renderAll() {
   renderCategories();
   renderProducts();
+  renderProductManagement();
   renderCart();
   renderHistory();
   renderSalesSummary();
@@ -1153,6 +1643,32 @@ function logoutDemo() {
   $("loginError").style.display = "none";
 }
 renderAll();
+function showPage(pageName) {
+  // Sembunyikan semua halaman
+  document.querySelectorAll(".page-section").forEach(page => {
+    page.classList.remove("active");
+  });
+
+  // Tampilkan halaman yang dipilih
+  const selectedPage = document.getElementById("page-" + pageName);
+
+  if (selectedPage) {
+    selectedPage.classList.add("active");
+  }
+
+  // Ubah tampilan tombol menu
+  document.querySelectorAll(".nav-menu").forEach(button => {
+    button.classList.remove("active");
+  });
+
+  const activeButton = document.querySelector(
+    `.nav-menu[onclick="showPage('${pageName}')"]`
+  );
+
+  if (activeButton) {
+    activeButton.classList.add("active");
+  }
+}
 </script>
 </body>
 </html>
