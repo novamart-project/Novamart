@@ -819,7 +819,7 @@ tbody tr:hover{background:#fafcff}
           <div class="field">
             <label for="paymentMethod">METODE PEMBAYARAN</label>
             <select id="paymentMethod">
-              <option value="tunai">Tunai</option>
+              <option value="cash">Tunai</option>
               <option value="qris">QRIS</option>
             </select>
           </div>
@@ -906,7 +906,7 @@ tbody tr:hover{background:#fafcff}
       <div class="panel-heading">
         <div>
           <h3>Transaksi Terakhir</h3>
-          <p>Riwayat transaksi yang tersimpan di browser ini.</p>
+          <p>Riwayat transaksi yang tersimpan di database NOVAMART.</p>
         </div>
         <button class="btn btn-light" onclick="exportHistory()">↓ Ekspor CSV</button>
       </div>
@@ -987,8 +987,37 @@ function loadData(key,fallback){
   }catch{return fallback;}
 }
 
-let products=loadData("novamart_pos_products",sampleProducts);
-let history=loadData("novamart_pos_history",[]);
+let products=[];
+let history=[];
+let authToken=sessionStorage.getItem("novamart_token")||"";
+let currentUser=null;
+const API_BASE="https://novamart-backend-production-6256.up.railway.app";
+
+async function apiRequest(path, options={}) {
+  const headers={"Content-Type":"application/json",...(options.headers||{})};
+  if(authToken) headers.Authorization="Bearer "+authToken;
+  const response=await fetch(API_BASE+path,{...options,headers});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data.error||"Permintaan ke server gagal.");
+  return data;
+}
+
+async function loadServerData(){
+  const result=await apiRequest("/api/products");
+  products=(result.products||[]).map(p=>({
+    dbId:Number(p.id), id:String(p.sku), name:p.name,
+    category:p.category||"Lainnya", price:Number(p.price),
+    stock:Number(p.stock), icon:"🛍️"
+  }));
+  const txResult=await apiRequest("/api/transactions");
+  history=(txResult.transactions||[]).map(tx=>({
+    id:tx.invoiceNo, date:tx.createdAt, items:[],
+    total:Number(tx.total), paid:Number(tx.amountPaid),
+    change:Number(tx.changeAmount), paymentMethod:tx.paymentMethod,
+    cashierName:tx.cashierName
+  }));
+  renderAll();
+}
 let cart=[];
 let activeCategory="Semua";
 let editingProductId=null;
@@ -1001,16 +1030,8 @@ function money(value){
 function escapeHTML(value){
   return String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
 }
-function saveData(){
-  try{
-    localStorage.setItem("novamart_pos_products",JSON.stringify(products));
-    localStorage.setItem("novamart_pos_history",JSON.stringify(history));
-    return true;
-  }catch{
-    notify("Penyimpanan browser gagal. Periksa ruang penyimpanan.");
-    return false;
-  }
-}
+function saveData(){ return true; }
+
 function notify(message){
   $("toast").textContent=message;
   $("toast").classList.add("show");
@@ -1072,9 +1093,9 @@ function renderProducts(){
         <div class="product-price">${money(p.price)}</div>
         <div class="product-stock">${p.stock>0?"Stok: "+p.stock:"Stok habis"}</div>
       </button>
-      <div class="product-actions">
+      <div class="product-actions" ${currentUser?.role!=="admin"?"hidden":""}>
         <button class="btn btn-light btn-small" onclick="openProductForm('${escapeHTML(p.id)}')">Edit</button>
-        <button class="btn btn-danger btn-small" onclick="deleteProduct('${escapeHTML(p.id)}')">Hapus</button>
+        <button class="btn btn-danger btn-small" onclick="deleteProduct('${escapeHTML(p.id)}')">Nonaktifkan</button>
       </div>
     </div>
   `).join(""):'<div class="empty">Produk tidak ditemukan.</div>';
@@ -1144,50 +1165,47 @@ function closeProductForm(){
   $("productModal").classList.remove("open");
   $("productId").disabled=false;
 }
-$("productForm").addEventListener("submit",event=>{
+$("productForm").addEventListener("submit",async event=>{
   event.preventDefault();
-  const id=$("productId").value.trim().toUpperCase();
+  if(!currentUser||currentUser.role!=="admin")return notify("Hanya Admin yang dapat mengelola produk.");
+  const sku=$("productId").value.trim().toUpperCase();
   const name=$("productName").value.trim();
   const category=$("productCategory").value.trim();
   const price=Number($("productPrice").value);
   const stock=Number($("productStock").value);
-  const icon=$("productIcon").value.trim()||"🛍️";
-
-  if(!id||!name||!category||!Number.isFinite(price)||price<0||!Number.isInteger(price)||!Number.isInteger(stock)||stock<0){
+  if(!sku||!name||!category||!Number.isFinite(price)||price<0||!Number.isInteger(price)||!Number.isInteger(stock)||stock<0)
     return notify("Periksa kembali data produk.");
-  }
-  if(!editingProductId&&products.some(p=>p.id.toLowerCase()===id.toLowerCase())){
-    return notify("Kode produk sudah digunakan.");
-  }
-
-  const oldProducts=products.map(p=>({...p}));
-  const oldCart=cart.map(item=>({...item}));
-  if(editingProductId){
-    products=products.map(p=>p.id===editingProductId?{...p,name,category,price,stock,icon}:p);
-    cart=cart.map(item=>item.id===editingProductId?{...item,name,price}:item);
-  }else{
-    products.push({id,name,category,price,stock,icon});
-  }
-  if(!saveData()){
-    products=oldProducts;
-    cart=oldCart;
-    return;
-  }
-  activeCategory="Semua";
-  closeProductForm();
-  renderAll();
-  notify(editingProductId?"Produk berhasil diperbarui.":"Produk berhasil ditambahkan.");
+  try{
+    if(editingProductId){
+      const existing=products.find(p=>p.id===editingProductId);
+      await apiRequest("/api/admin/products/"+existing.dbId,{
+        method:"PATCH",body:JSON.stringify({name,category,price,stock})
+      });
+    }else{
+      await apiRequest("/api/admin/products",{
+        method:"POST",body:JSON.stringify({sku,name,category,price,stock})
+      });
+    }
+    await loadServerData();
+    activeCategory="Semua";
+    closeProductForm();
+    renderAll();
+    notify(editingProductId?"Produk berhasil diperbarui di database.":"Produk berhasil ditambahkan ke database.");
+  }catch(error){notify(error.message);}
 });
-function deleteProduct(id){
+async function deleteProduct(id){
+  if(!currentUser||currentUser.role!=="admin")return notify("Hanya Admin yang dapat mengelola produk.");
   const p=products.find(item=>item.id===id);
   if(!p)return;
-  if(cart.some(item=>item.id===id))return notify("Keluarkan produk dari keranjang sebelum menghapusnya.");
-  if(!confirm("Hapus produk "+p.name+"?"))return;
-  const old=products;
-  products=products.filter(item=>item.id!==id);
-  if(!saveData()){products=old;return;}
-  renderAll();
-  notify("Produk berhasil dihapus.");
+  if(cart.some(item=>item.id===id))return notify("Keluarkan produk dari keranjang sebelum menonaktifkannya.");
+  if(!confirm("Nonaktifkan produk "+p.name+"? Produk tidak akan dihapus dari riwayat transaksi."))return;
+  try{
+    await apiRequest("/api/admin/products/"+p.dbId,{
+      method:"PATCH",body:JSON.stringify({is_active:false})
+    });
+    await loadServerData();
+    notify("Produk berhasil dinonaktifkan.");
+  }catch(error){notify(error.message);}
 }
 
 function addToCart(id){
@@ -1268,50 +1286,54 @@ function resetCart(){
   renderCategories();renderProducts();renderCart();
   notify("Keranjang siap untuk transaksi baru.");
 }
-function checkout(){
+async function checkout(){
   if(!cart.length)return notify("Keranjang masih kosong.");
-  for(const item of cart){
-    const p=products.find(p=>p.id===item.id);
-    if(!p||p.stock<item.qty){
-      renderProducts();
-      return notify("Stok berubah. Periksa kembali keranjang.");
-    }
-  }
-  const total=getTotal(),paid=Number($("payment").value);
-  if(!Number.isFinite(paid)||paid<total)return notify("Uang pembayaran belum mencukupi.");
+  const method=$("paymentMethod").value;
+  const total=getTotal();
+  const paid=method==="qris"?total:Number($("payment").value);
+  if(method==="cash"&&(!Number.isFinite(paid)||paid<total))return notify("Uang pembayaran belum mencukupi.");
   if(!Number.isInteger(paid)||paid<0)return notify("Masukkan nominal pembayaran dalam rupiah bulat.");
-
-  const now=new Date();
-  const tx={
-    id:"NM-"+now.getTime(),
-    date:now.toISOString(),
-    items:cart.map(item=>({...item})),
-    total,paid,change:paid-total
-  };
-  const oldProducts=products.map(p=>({...p}));
-  const oldHistory=[...history];
-  cart.forEach(item=>{
-    const p=products.find(p=>p.id===item.id);
-    p.stock-=item.qty;
-  });
-  history.unshift(tx);
-  if(!saveData()){
-    products=oldProducts;
-    history=oldHistory;
-    return;
+  try{
+    const result=await apiRequest("/api/transactions/checkout",{
+      method:"POST",
+      body:JSON.stringify({
+        items:cart.map(item=>{
+          const product=products.find(p=>p.id===item.id);
+          return {productId:product.dbId,quantity:item.qty};
+        }),
+        paymentMethod:method==="cash"?"cash":method,
+        amountPaid:paid,
+        discount:0
+      })
+    });
+    const tx={
+      id:result.invoiceNo,
+      date:new Date().toISOString(),
+      items:cart.map(item=>({...item})),
+      total:Number(result.total),
+      paid,
+      change:Number(result.change||0),
+      paymentMethod:method,
+      cashierName:currentUser?.fullName||currentUser?.username||""
+    };
+    cart=[];
+    $("payment").value="";
+    await loadServerData();
+    showReceipt(tx);
+    notify("Transaksi berhasil disimpan ke database.");
+  }catch(error){
+    notify(error.message);
+    try{await loadServerData();}catch{}
   }
-  cart=[];
-  $("payment").value="";
-  renderAll();
-  showReceipt(tx);
-  notify("Transaksi berhasil disimpan.");
 }
 function showReceipt(tx){
   $("receiptContent").innerHTML=`
     <h2>NOVAMART</h2>
     <div style="text-align:center">Bukti Pembayaran</div>
     <p>No: ${escapeHTML(tx.id)}</p>
-    <p>${escapeHTML(new Date(tx.date).toLocaleString("id-ID"))}</p><hr>
+    <p>${escapeHTML(new Date(tx.date).toLocaleString("id-ID"))}</p>
+    <p>Kasir: ${escapeHTML(tx.cashierName||currentUser?.fullName||"-")}</p>
+    <p>Metode: ${escapeHTML(String(tx.paymentMethod||"-").toUpperCase())}</p><hr>
     ${tx.items.map(item=>`
       <div class="receipt-row"><span>${escapeHTML(item.name)}<br>${item.qty} x ${money(item.price)}</span><strong>${money(item.price*item.qty)}</strong></div>
     `).join("")}
@@ -1612,37 +1634,75 @@ $("reportPeriod").addEventListener("change", renderSalesReport);
 $("reportDate").addEventListener("change", renderSalesReport);
 $("year").textContent=new Date().getFullYear();
 
-const DEMO_USERNAME = "Novamart-ceria";
-const DEMO_PASSWORD = "novamart123";
+async function applyUserAccess(){
+  const isAdmin=currentUser?.role==="admin";
+  document.querySelectorAll(".nav-menu").forEach(button=>{
+    const target=(button.getAttribute("onclick")||"").match(/showPage\('([^']+)'\)/)?.[1];
+    if(target==="produk"||target==="laporan")button.hidden=!isAdmin;
+  });
+  document.querySelectorAll('[onclick="openProductForm()"]').forEach(button=>button.hidden=!isAdmin);
+  const name=currentUser?.fullName||currentUser?.username||"Pengguna";
+  const status=document.querySelector(".status");
+  if(status)status.textContent=(isAdmin?"Admin: ":"Kasir: ")+name;
+}
 
-$("loginForm").addEventListener("submit", function(event) {
+async function enterApp(user){
+  currentUser=user;
+  $("loginError").style.display="none";
+  $("loginScreen").hidden=true;
+  $("appShell").hidden=false;
+  $("loginPassword").value="";
+  await applyUserAccess();
+  await loadServerData();
+}
+
+$("loginForm").addEventListener("submit",async function(event){
   event.preventDefault();
-
-  const username = $("loginUsername").value.trim();
-  const password = $("loginPassword").value;
-
-  if (
-    username === DEMO_USERNAME &&
-    password === DEMO_PASSWORD
-  ) {
-    $("loginError").style.display = "none";
-    $("loginScreen").hidden = true;
-    $("appShell").hidden = false;
-    $("loginPassword").value = "";
-
-    renderAll();
-  } else {
-    $("loginError").style.display = "block";
+  const username=$("loginUsername").value.trim();
+  const password=$("loginPassword").value;
+  const button=$("loginForm").querySelector('button[type="submit"]');
+  button.disabled=true;
+  button.textContent="Menghubungkan...";
+  try{
+    const result=await apiRequest("/api/auth/login",{
+      method:"POST",body:JSON.stringify({username,password})
+    });
+    authToken=result.token;
+    sessionStorage.setItem("novamart_token",authToken);
+    await enterApp(result.user);
+  }catch(error){
+    $("loginError").textContent=error.message||"Username atau password salah.";
+    $("loginError").style.display="block";
+  }finally{
+    button.disabled=false;
+    button.textContent="Masuk ke Novamart";
   }
 });
 
-function logoutDemo() {
-  $("appShell").hidden = true;
-  $("loginScreen").hidden = false;
+async function logoutDemo(){
+  authToken="";
+  currentUser=null;
+  sessionStorage.removeItem("novamart_token");
+  products=[];
+  history=[];
+  cart=[];
+  $("appShell").hidden=true;
+  $("loginScreen").hidden=false;
   $("loginForm").reset();
-  $("loginError").style.display = "none";
+  $("loginError").style.display="none";
 }
-renderAll();
+
+async function restoreSession(){
+  if(!authToken)return;
+  try{
+    const result=await apiRequest("/api/auth/me");
+    await enterApp(result.user);
+  }catch{
+    authToken="";
+    sessionStorage.removeItem("novamart_token");
+  }
+}
+
 function showPage(pageName) {
   // Sembunyikan semua halaman
   document.querySelectorAll(".page-section").forEach(page => {
